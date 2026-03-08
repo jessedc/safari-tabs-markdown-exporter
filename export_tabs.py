@@ -133,6 +133,36 @@ def fallback_summary(text: str | None) -> str:
     return " ".join(sentences)
 
 
+async def _summarize_with_apple(texts: dict[str, str]) -> dict[str, str]:
+    """Summarize page texts using Apple Intelligence on-device model."""
+    import apple_fm_sdk as fm
+
+    model = fm.SystemLanguageModel()
+    is_available, reason = model.is_available()
+    if not is_available:
+        raise RuntimeError(f"Apple Intelligence not available: {reason}")
+
+    summaries: dict[str, str] = {}
+    for i, (url, text) in enumerate(texts.items(), 1):
+        print(f"  Summarizing {i}/{len(texts)}...", file=sys.stderr)
+        session = fm.LanguageModelSession(
+            instructions="Summarize web page content in 1-2 concise sentences.",
+            model=model,
+        )
+        try:
+            response = await session.respond(text)
+            summaries[url] = str(response)
+        except (fm.ExceededContextWindowSizeError, fm.GuardrailViolationError, fm.GenerationError):
+            summaries[url] = fallback_summary(text)
+    return summaries
+
+
+def summarize_with_apple(texts: dict[str, str]) -> dict[str, str]:
+    """Sync wrapper for Apple Intelligence summarization."""
+    import asyncio
+    return asyncio.run(_summarize_with_apple(texts))
+
+
 def summarize_with_claude(texts: dict[str, str]) -> dict[str, str]:
     """Summarize page texts using Claude. Returns {url: summary}."""
     try:
@@ -250,6 +280,12 @@ def main():
     parser.add_argument("output_path", help="File path or directory to save the markdown file (directory uses DATE-tabs.md)")
     parser.add_argument("--no-summarize", action="store_true", help="Skip AI summaries")
     parser.add_argument(
+        "--backend",
+        choices=["auto", "apple", "claude"],
+        default="auto",
+        help="Summarization backend: auto (try Apple then Claude), apple, or claude (default: auto)",
+    )
+    parser.add_argument(
         "--group-by-window", action="store_true", help="Group tabs by Safari window"
     )
     args = parser.parse_args()
@@ -274,7 +310,23 @@ def main():
         texts = extract_texts(tabs)
         if texts:
             print(f"Summarizing {len(texts)} pages...", file=sys.stderr)
-            summaries = summarize_with_claude(texts)
+            backend = args.backend
+
+            if backend == "apple":
+                try:
+                    summaries = summarize_with_apple(texts)
+                except (ImportError, RuntimeError) as e:
+                    print(f"Error: {e}", file=sys.stderr)
+                    sys.exit(1)
+            elif backend == "claude":
+                summaries = summarize_with_claude(texts)
+            else:  # auto
+                try:
+                    summaries = summarize_with_apple(texts)
+                    print("Using Apple Intelligence for summaries.", file=sys.stderr)
+                except (ImportError, RuntimeError):
+                    print("Apple Intelligence not available, falling back to Claude.", file=sys.stderr)
+                    summaries = summarize_with_claude(texts)
     else:
         print("Skipping summaries (--no-summarize).", file=sys.stderr)
 
