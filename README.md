@@ -13,7 +13,7 @@ Export all open Safari tabs to a markdown file with AI-generated summaries, dedu
 ## Usage
 
 ```bash
-# Basic export
+# Basic export (uses Apple Intelligence if available, falls back to Claude)
 uv run export_tabs.py ~/Desktop/tabs.md
 
 # Export to a directory (creates ~/Desktop/2026-03-08-tabs.md)
@@ -26,14 +26,26 @@ uv run export_tabs.py ~/Desktop/tabs.md --no-summarize
 uv run export_tabs.py ~/Desktop/tabs.md --group-by-window
 ```
 
-For AI summaries, set your Anthropic API key:
+### Summarization backends
+
+The `--backend` flag controls which AI is used for summaries (default: `auto`).
+
+| Backend | Flag | Requirements |
+|---------|------|--------------|
+| Auto | `--backend auto` | Tries Apple Intelligence first, falls back to Claude |
+| Apple Intelligence | `--backend apple` | macOS 26+, Apple Intelligence enabled |
+| Claude | `--backend claude` | `ANTHROPIC_API_KEY` environment variable |
 
 ```bash
+# Use Apple Intelligence (on-device, free, no API key)
+uv run export_tabs.py ~/Desktop/tabs.md --backend apple
+
+# Use Claude API
 export ANTHROPIC_API_KEY=sk-ant-...
-uv run export_tabs.py ~/Desktop/tabs.md
+uv run export_tabs.py ~/Desktop/tabs.md --backend claude
 ```
 
-Without the API key, the script falls back to text excerpts from each page.
+Without a working backend, the script falls back to text excerpts from each page.
 
 ## Output
 
