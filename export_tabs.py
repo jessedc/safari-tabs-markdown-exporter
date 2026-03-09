@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["anthropic"]
+# dependencies = ["apple-fm-sdk"]
 # ///
 """Export all open Safari tabs to a markdown file with AI-generated summaries."""
 
@@ -10,7 +10,7 @@ import json
 import os
 import subprocess
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 from datetime import date
 from urllib.parse import urldefrag
 
@@ -47,6 +47,15 @@ JXA_GET_TEXT_TEMPLATE = """
 }})();
 """
 
+JXA_RELOAD_TAB_TEMPLATE = """
+(() => {{
+    const safari = Application("Safari");
+    const tab = safari.windows()[{window}].tabs()[{tab}];
+    const url = tab.url();
+    tab.url = url;
+}})();
+"""
+
 # ---------------------------------------------------------------------------
 # Tab extraction
 # ---------------------------------------------------------------------------
@@ -73,67 +82,86 @@ def get_tabs() -> list[dict]:
     return data
 
 
-def get_tab_text(tab: dict) -> str | None:
-    """Extract page text for a single tab. Returns None on failure."""
-    script = JXA_GET_TEXT_TEMPLATE.format(
-        window=tab["window"] - 1, tab=tab["tab_index"] - 1
-    )
+def get_tab_text(tab: dict, reload_delay: int = 3) -> tuple[str | None, bool]:
+    """Extract page text for a single tab, reloading if suspended.
+
+    Returns (text, was_reloaded). text is None on failure.
+    """
+    window = tab["window"] - 1
+    tab_idx = tab["tab_index"] - 1
+    script = JXA_GET_TEXT_TEMPLATE.format(window=window, tab=tab_idx)
     try:
-        return run_jxa(script)
-    except Exception as e:
-        err = str(e)
-        if "not allowed" in err.lower() or "permission" in err.lower():
-            print(
-                "Warning: JavaScript from Apple Events is not enabled.\n"
-                "  Enable it in Safari > Settings > Advanced > 'Show features for web developers',\n"
-                "  then Developer > 'Allow JavaScript from Apple Events'.\n"
-                "  Falling back to title-only mode.",
-                file=sys.stderr,
-            )
-        return None
+        text = run_jxa(script)
+        if text and len(text) >= 50:
+            return text, False
+        # Tab likely suspended — reload and retry
+        reload_script = JXA_RELOAD_TAB_TEMPLATE.format(window=window, tab=tab_idx)
+        run_jxa(reload_script)
+        time.sleep(reload_delay)
+        retried = run_jxa(script)
+        return retried if retried else "", True
+    except Exception:
+        return None, False
 
 
 # ---------------------------------------------------------------------------
 # Summarization
 # ---------------------------------------------------------------------------
 
-_permission_warned = False
-
 
 def extract_texts(tabs: list[dict]) -> dict[str, str]:
-    """Extract page text for all tabs. Returns {url: text}."""
-    global _permission_warned
+    """Extract page text for all tabs. Exits with instructions if JS permission is missing."""
     texts: dict[str, str] = {}
-    for tab in tabs:
-        if _permission_warned:
-            break
-        text = get_tab_text(tab)
+    for i, tab in enumerate(tabs, 1):
+        text, reloaded = get_tab_text(tab)
+        if reloaded:
+            print(f"  Tab {i}/{len(tabs)}: reloading suspended tab...", file=sys.stderr)
         if text is None:
-            _permission_warned = True
-        else:
-            texts[tab["url"]] = text
+            print(
+                "Error: Cannot extract page content — JavaScript from Apple Events is not enabled.\n"
+                "\n"
+                "To enable it:\n"
+                "  1. Open Safari > Settings > Advanced\n"
+                '  2. Check "Show features for web developers"\n'
+                "  3. Close Settings, then go to the Develop menu\n"
+                '  4. Check "Allow JavaScript from Apple Events"\n'
+                "\n"
+                "Then re-run this script.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        texts[tab["url"]] = text
     return texts
 
 
-def fallback_summary(text: str | None) -> str:
-    """Return first ~2 sentences of raw text as fallback."""
-    if not text:
-        return ""
-    sentences = []
-    current = []
-    for char in text[:500]:
-        current.append(char)
-        if char in ".!?" and len("".join(current).strip()) > 10:
-            sentences.append("".join(current).strip())
-            current = []
-            if len(sentences) >= 2:
-                break
-    if current and len(sentences) < 2:
-        sentences.append("".join(current).strip())
-    return " ".join(sentences)
+_REFUSAL_PREFIXES = (
+    "i apologize",
+    "i'm sorry",
+    "sorry",
+    "i cannot",
+    "i can't",
+    "i'm unable",
+    "sure, i'd be happy to help",
+)
 
 
-async def _summarize_with_apple(texts: dict[str, str]) -> dict[str, str]:
+def _is_refusal(text: str) -> bool:
+    """Detect model refusal/apology responses that aren't useful summaries."""
+    lower = text.strip().lower()
+    return any(lower.startswith(p) for p in _REFUSAL_PREFIXES)
+
+
+def _is_useless_summary(response: str, input_text: str) -> bool:
+    """Detect responses that just echo the title back or are refusals."""
+    if _is_refusal(response):
+        return True
+    # Model echoed the input verbatim or said "summary unavailable"
+    if response.strip().lower() in (input_text.strip().lower(), "summary unavailable"):
+        return True
+    return False
+
+
+async def _summarize(texts: dict[str, str]) -> dict[str, str]:
     """Summarize page texts using Apple Intelligence on-device model."""
     import apple_fm_sdk as fm
 
@@ -146,62 +174,41 @@ async def _summarize_with_apple(texts: dict[str, str]) -> dict[str, str]:
     for i, (url, text) in enumerate(texts.items(), 1):
         print(f"  Summarizing {i}/{len(texts)}...", file=sys.stderr)
         session = fm.LanguageModelSession(
-            instructions="Summarize web page content in 1-2 concise sentences.",
+            instructions=(
+                "Summarize the following content in 1-2 concise sentences. "
+                "Write only the summary — do not start with 'This page', 'The page', "
+                "'A webpage', 'This web page', or similar references to it being a page. "
+                "Do not repeat the title. Do not apologize or refuse. "
+                "If the content is insufficient (e.g. just a title, a login page, "
+                "or a generic page name), explain briefly why a summary isn't possible, "
+                "e.g. 'Title only — no content available' or 'Login page — no "
+                "summarizable content'."
+            ),
             model=model,
         )
         try:
-            response = await session.respond(text)
-            summaries[url] = str(response)
-        except (fm.ExceededContextWindowSizeError, fm.GuardrailViolationError, fm.GenerationError):
-            summaries[url] = fallback_summary(text)
+            response = str(await session.respond(text))
+            if _is_useless_summary(response, text):
+                summaries[url] = "Could not summarize — insufficient content"
+            else:
+                # Strip preamble like "Summary:" that the model sometimes adds
+                cleaned = response.strip()
+                if cleaned.lower().startswith("summary:"):
+                    cleaned = cleaned[len("summary:"):].strip()
+                summaries[url] = cleaned
+        except fm.ExceededContextWindowSizeError:
+            summaries[url] = "Could not summarize — content too long for on-device model"
+        except fm.GuardrailViolationError:
+            summaries[url] = "Could not summarize — content blocked by safety filter"
+        except fm.GenerationError as e:
+            summaries[url] = f"Could not summarize — generation failed: {e}"
     return summaries
 
 
-def summarize_with_apple(texts: dict[str, str]) -> dict[str, str]:
-    """Sync wrapper for Apple Intelligence summarization."""
+def summarize(texts: dict[str, str]) -> dict[str, str]:
+    """Summarize page texts using Apple Intelligence."""
     import asyncio
-    return asyncio.run(_summarize_with_apple(texts))
-
-
-def summarize_with_claude(texts: dict[str, str]) -> dict[str, str]:
-    """Summarize page texts using Claude. Returns {url: summary}."""
-    try:
-        import anthropic
-    except ImportError:
-        print("Warning: anthropic package not installed. Skipping AI summaries.", file=sys.stderr)
-        return {url: fallback_summary(text) for url, text in texts.items()}
-
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("Warning: ANTHROPIC_API_KEY not set. Using text excerpts instead.", file=sys.stderr)
-        return {url: fallback_summary(text) for url, text in texts.items()}
-
-    client = anthropic.Anthropic(api_key=api_key)
-    summaries: dict[str, str] = {}
-
-    def _summarize_one(url: str, text: str) -> tuple[str, str]:
-        try:
-            response = client.messages.create(
-                model="claude-haiku-4-5-20251001",
-                max_tokens=150,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"Summarize this web page content in 1-2 concise sentences:\n\n{text}",
-                    }
-                ],
-            )
-            return url, response.content[0].text
-        except Exception:
-            return url, fallback_summary(text)
-
-    with ThreadPoolExecutor(max_workers=10) as pool:
-        futures = {pool.submit(_summarize_one, url, text): url for url, text in texts.items()}
-        for future in as_completed(futures):
-            url, summary = future.result()
-            summaries[url] = summary
-
-    return summaries
+    return asyncio.run(_summarize(texts))
 
 
 # ---------------------------------------------------------------------------
@@ -228,6 +235,7 @@ def deduplicate(tabs: list[dict]) -> tuple[list[dict], int]:
 def render_markdown(
     tabs: list[dict],
     summaries: dict[str, str],
+    texts: dict[str, str],
     total_count: int,
     dup_count: int,
     num_windows: int,
@@ -280,12 +288,6 @@ def main():
     parser.add_argument("output_path", help="File path or directory to save the markdown file (directory uses DATE-tabs.md)")
     parser.add_argument("--no-summarize", action="store_true", help="Skip AI summaries")
     parser.add_argument(
-        "--backend",
-        choices=["auto", "apple", "claude"],
-        default="auto",
-        help="Summarization backend: auto (try Apple then Claude), apple, or claude (default: auto)",
-    )
-    parser.add_argument(
         "--group-by-window", action="store_true", help="Group tabs by Safari window"
     )
     args = parser.parse_args()
@@ -305,33 +307,22 @@ def main():
 
     # Phase 3: Summarize
     summaries: dict[str, str] = {}
+    texts: dict[str, str] = {}
     if not args.no_summarize:
         print("Extracting page text...", file=sys.stderr)
         texts = extract_texts(tabs)
         if texts:
-            print(f"Summarizing {len(texts)} pages...", file=sys.stderr)
-            backend = args.backend
-
-            if backend == "apple":
-                try:
-                    summaries = summarize_with_apple(texts)
-                except (ImportError, RuntimeError) as e:
-                    print(f"Error: {e}", file=sys.stderr)
-                    sys.exit(1)
-            elif backend == "claude":
-                summaries = summarize_with_claude(texts)
-            else:  # auto
-                try:
-                    summaries = summarize_with_apple(texts)
-                    print("Using Apple Intelligence for summaries.", file=sys.stderr)
-                except (ImportError, RuntimeError):
-                    print("Apple Intelligence not available, falling back to Claude.", file=sys.stderr)
-                    summaries = summarize_with_claude(texts)
+            print(f"Summarizing {len(texts)} pages with Apple Intelligence...", file=sys.stderr)
+            try:
+                summaries = summarize(texts)
+            except (ImportError, RuntimeError) as e:
+                print(f"Error: {e}", file=sys.stderr)
+                sys.exit(1)
     else:
         print("Skipping summaries (--no-summarize).", file=sys.stderr)
 
     # Phase 4: Render
-    md = render_markdown(tabs, summaries, total_count, dup_count, num_windows, args.group_by_window)
+    md = render_markdown(tabs, summaries, texts, total_count, dup_count, num_windows, args.group_by_window)
 
     output_path = os.path.expanduser(args.output_path)
     if os.path.isdir(output_path):
