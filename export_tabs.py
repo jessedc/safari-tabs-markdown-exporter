@@ -239,7 +239,6 @@ def render_markdown(
     total_count: int,
     dup_count: int,
     num_windows: int,
-    group_by_window: bool,
 ) -> str:
     lines = [
         "# Safari Tabs Export",
@@ -260,20 +259,9 @@ def render_markdown(
             entry.append(f"  > {summary}")
         return entry
 
-    if group_by_window:
-        from itertools import groupby
-
-        for window_num, group in groupby(tabs, key=lambda t: t["window"]):
-            group_tabs = list(group)
-            lines.append(f"## Window {window_num} ({len(group_tabs)} tabs)")
-            lines.append("")
-            for tab in group_tabs:
-                lines.extend(_render_tab(tab))
-            lines.append("")
-    else:
-        for tab in tabs:
-            lines.extend(_render_tab(tab))
-        lines.append("")
+    for tab in tabs:
+        lines.extend(_render_tab(tab))
+    lines.append("")
 
     return "\n".join(lines)
 
@@ -287,9 +275,6 @@ def main():
     parser = argparse.ArgumentParser(description="Export Safari tabs to markdown.")
     parser.add_argument("output_path", help="File path or directory to save the markdown file (directory uses DATE-tabs.md)")
     parser.add_argument("--no-summarize", action="store_true", help="Skip AI summaries")
-    parser.add_argument(
-        "--group-by-window", action="store_true", help="Group tabs by Safari window"
-    )
     args = parser.parse_args()
 
     # Phase 1: Extract
@@ -322,7 +307,7 @@ def main():
         print("Skipping summaries (--no-summarize).", file=sys.stderr)
 
     # Phase 4: Render
-    md = render_markdown(tabs, summaries, texts, total_count, dup_count, num_windows, args.group_by_window)
+    md = render_markdown(tabs, summaries, texts, total_count, dup_count, num_windows)
 
     output_path = os.path.expanduser(args.output_path)
     if os.path.isdir(output_path):

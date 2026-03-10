@@ -8,7 +8,6 @@ Export all open Safari tabs to a markdown file with AI-generated summaries.
 - Summarizes each tab using Apple Intelligence (on-device, free, no API key)
 - Deduplicates tabs by URL (stripping fragments)
 - Automatically reloads suspended/purged tabs to extract content
-- Groups tabs by window (optional)
 - Outputs clean markdown with tab titles, links, and summaries
 
 ## Prerequisites
@@ -31,8 +30,6 @@ uv run --script export_tabs.py ~/Desktop/
 # Without AI summaries
 uv run --script export_tabs.py ~/Desktop/tabs.md --no-summarize
 
-# Group tabs by window
-uv run --script export_tabs.py ~/Desktop/tabs.md --group-by-window
 ```
 
 ## Output
