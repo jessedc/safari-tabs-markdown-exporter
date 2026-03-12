@@ -32,6 +32,65 @@ uv run --script export_tabs.py ~/Desktop/tabs.md --no-summarize
 
 ```
 
+## Domain Ignore List
+
+Filter out tabs from specific domains by creating a file at `~/.config/safari-tabs/ignore-domains.txt`:
+
+```
+# Social media
+twitter.com
+facebook.com
+
+# Other
+reddit.com
+```
+
+One domain per line, `#` comments and blank lines are ignored. Subdomains are matched automatically (e.g. `twitter.com` also filters `mobile.twitter.com`).
+
+Override the file path with `--ignore-file`:
+
+```bash
+uv run --script export_tabs.py ~/Desktop/tabs.md --ignore-file ~/my-ignore-list.txt
+```
+
+## Closing Tabs
+
+Use `--close-tabs` to close exported tabs in Safari after writing the file:
+
+```bash
+uv run --script export_tabs.py ~/Desktop/tabs.md --close-tabs
+```
+
+When running interactively, you'll be prompted to confirm. In non-interactive mode (e.g. launchd), tabs are closed without prompting.
+
+## Daily Scheduling
+
+Install a daily launchd schedule to automatically export tabs:
+
+```bash
+# Install (runs daily at 9:00 AM by default)
+uv run --script export_tabs.py --install-schedule
+
+# Custom hour and output directory
+uv run --script export_tabs.py --install-schedule --schedule-hour 18 --schedule-output-dir ~/Dropbox/tabs
+
+# Include tab closing and skip summaries in scheduled runs
+uv run --script export_tabs.py --install-schedule --schedule-close-tabs --schedule-no-summarize
+
+# Remove the schedule
+uv run --script export_tabs.py --uninstall-schedule
+```
+
+- **Plist:** `~/Library/LaunchAgents/com.user.safari-tabs-export.plist`
+- **Logs:** `~/Library/Logs/safari-tabs-export.log`
+- **Default output:** `~/Documents/safari-tabs/`
+
+Check if the schedule is active:
+
+```bash
+launchctl list | grep safari-tabs
+```
+
 ## Output
 
 The script generates a markdown file like:

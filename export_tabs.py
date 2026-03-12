@@ -8,11 +8,13 @@
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
 from datetime import date
-from urllib.parse import urldefrag
+from pathlib import Path
+from urllib.parse import urldefrag, urlparse
 
 # ---------------------------------------------------------------------------
 # JXA scripts
@@ -53,6 +55,24 @@ JXA_RELOAD_TAB_TEMPLATE = """
     const tab = safari.windows()[{window}].tabs()[{tab}];
     const url = tab.url();
     tab.url = url;
+}})();
+"""
+
+JXA_CLOSE_TABS_TEMPLATE = """
+(() => {{
+    const safari = Application("Safari");
+    const urls = new Set({urls_json});
+    const windows = safari.windows();
+    for (let w = windows.length - 1; w >= 0; w--) {{
+        const tabs = windows[w].tabs();
+        for (let t = tabs.length - 1; t >= 0; t--) {{
+            const url = tabs[t].url() || "";
+            if (urls.has(url)) {{
+                tabs[t].close();
+            }}
+        }}
+    }}
+    return "ok";
 }})();
 """
 
@@ -102,6 +122,53 @@ def get_tab_text(tab: dict, reload_delay: int = 3) -> tuple[str | None, bool]:
         return retried if retried else "", True
     except Exception:
         return None, False
+
+
+# ---------------------------------------------------------------------------
+# Domain filtering
+# ---------------------------------------------------------------------------
+
+IGNORE_DOMAINS_DEFAULT = os.path.expanduser("~/.config/safari-tabs/ignore-domains.txt")
+
+
+def load_ignore_domains(path: str) -> set[str]:
+    """Load ignored domains from file. Returns empty set if file missing."""
+    try:
+        lines = Path(path).read_text().splitlines()
+    except FileNotFoundError:
+        return set()
+    domains = set()
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith("#"):
+            domains.add(line.lower())
+    return domains
+
+
+def filter_ignored(tabs: list[dict], domains: set[str]) -> list[dict]:
+    """Remove tabs whose hostname matches an ignored domain."""
+    if not domains:
+        return tabs
+    result = []
+    for tab in tabs:
+        hostname = urlparse(tab["url"]).hostname or ""
+        hostname = hostname.lower()
+        if hostname in domains or any(hostname.endswith("." + d) for d in domains):
+            continue
+        result.append(tab)
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Close tabs
+# ---------------------------------------------------------------------------
+
+
+def close_tabs(tabs: list[dict]) -> None:
+    """Close the given tabs in Safari by URL."""
+    urls = [tab["url"] for tab in tabs]
+    script = JXA_CLOSE_TABS_TEMPLATE.format(urls_json=json.dumps(urls))
+    run_jxa(script)
 
 
 # ---------------------------------------------------------------------------
@@ -267,15 +334,111 @@ def render_markdown(
 
 
 # ---------------------------------------------------------------------------
+# Scheduling (launchd)
+# ---------------------------------------------------------------------------
+
+PLIST_LABEL = "com.user.safari-tabs-export"
+PLIST_PATH = os.path.expanduser(f"~/Library/LaunchAgents/{PLIST_LABEL}.plist")
+LOG_PATH = os.path.expanduser("~/Library/Logs/safari-tabs-export.log")
+
+
+def install_schedule(args: argparse.Namespace) -> None:
+    """Generate a launchd plist and load it."""
+    uv_path = shutil.which("uv")
+    if not uv_path:
+        print("Error: 'uv' not found in PATH.", file=sys.stderr)
+        sys.exit(1)
+
+    script_path = os.path.abspath(__file__)
+    output_dir = os.path.expanduser(args.schedule_output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+
+    program_args = [uv_path, "run", "--script", script_path, output_dir]
+    if args.no_summarize or args.schedule_no_summarize:
+        program_args.append("--no-summarize")
+    if args.schedule_close_tabs:
+        program_args.append("--close-tabs")
+    if args.ignore_file:
+        program_args.extend(["--ignore-file", args.ignore_file])
+
+    args_xml = "\n        ".join(f"<string>{a}</string>" for a in program_args)
+    plist = f"""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>{PLIST_LABEL}</string>
+    <key>ProgramArguments</key>
+    <array>
+        {args_xml}
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>{args.schedule_hour}</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>{LOG_PATH}</string>
+    <key>StandardErrorPath</key>
+    <string>{LOG_PATH}</string>
+</dict>
+</plist>
+"""
+    os.makedirs(os.path.dirname(PLIST_PATH), exist_ok=True)
+    with open(PLIST_PATH, "w") as f:
+        f.write(plist)
+
+    subprocess.run(["launchctl", "load", PLIST_PATH], check=True)
+    print(f"Installed schedule: daily at {args.schedule_hour}:00", file=sys.stderr)
+    print(f"Plist: {PLIST_PATH}", file=sys.stderr)
+    print(f"Output: {output_dir}", file=sys.stderr)
+    print(f"Logs: {LOG_PATH}", file=sys.stderr)
+
+
+def uninstall_schedule() -> None:
+    """Unload and remove the launchd plist."""
+    if not os.path.exists(PLIST_PATH):
+        print("No schedule installed.", file=sys.stderr)
+        return
+    subprocess.run(["launchctl", "unload", PLIST_PATH], check=True)
+    os.remove(PLIST_PATH)
+    print("Schedule removed.", file=sys.stderr)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 
 def main():
     parser = argparse.ArgumentParser(description="Export Safari tabs to markdown.")
-    parser.add_argument("output_path", help="File path or directory to save the markdown file (directory uses DATE-tabs.md)")
+    parser.add_argument("output_path", nargs="?", help="File path or directory to save the markdown file (directory uses DATE-tabs.md)")
     parser.add_argument("--no-summarize", action="store_true", help="Skip AI summaries")
+    parser.add_argument("--ignore-file", metavar="PATH", help="Path to domain ignore list (default: ~/.config/safari-tabs/ignore-domains.txt)")
+    parser.add_argument("--close-tabs", action="store_true", help="Close exported tabs in Safari after writing")
+
+    # Schedule management
+    parser.add_argument("--install-schedule", action="store_true", help="Install daily launchd schedule")
+    parser.add_argument("--uninstall-schedule", action="store_true", help="Remove daily launchd schedule")
+    parser.add_argument("--schedule-hour", type=int, default=9, metavar="HOUR", help="Hour to run daily export (default: 9)")
+    parser.add_argument("--schedule-output-dir", default="~/Documents/safari-tabs", metavar="DIR", help="Output directory for scheduled exports")
+    parser.add_argument("--schedule-no-summarize", action="store_true", help="Skip summaries in scheduled runs")
+    parser.add_argument("--schedule-close-tabs", action="store_true", help="Close tabs in scheduled runs")
     args = parser.parse_args()
+
+    # Handle schedule commands (early exit)
+    if args.uninstall_schedule:
+        uninstall_schedule()
+        return
+    if args.install_schedule:
+        install_schedule(args)
+        return
+
+    if not args.output_path:
+        parser.error("output_path is required (unless using --install-schedule or --uninstall-schedule)")
 
     # Phase 1: Extract
     print("Extracting tabs from Safari...", file=sys.stderr)
@@ -290,7 +453,14 @@ def main():
     # Phase 2: Deduplicate
     tabs, dup_count = deduplicate(tabs)
 
-    # Phase 3: Summarize
+    # Phase 3: Filter ignored domains
+    ignore_path = args.ignore_file or IGNORE_DOMAINS_DEFAULT
+    if args.ignore_file and not os.path.exists(ignore_path):
+        print(f"Warning: ignore file not found: {ignore_path}", file=sys.stderr)
+    ignore_domains = load_ignore_domains(ignore_path)
+    tabs = filter_ignored(tabs, ignore_domains)
+
+    # Phase 4: Summarize
     summaries: dict[str, str] = {}
     texts: dict[str, str] = {}
     if not args.no_summarize:
@@ -306,7 +476,7 @@ def main():
     else:
         print("Skipping summaries (--no-summarize).", file=sys.stderr)
 
-    # Phase 4: Render
+    # Phase 5: Render
     md = render_markdown(tabs, summaries, texts, total_count, dup_count, num_windows)
 
     output_path = os.path.expanduser(args.output_path)
@@ -317,6 +487,16 @@ def main():
         f.write(md)
 
     print(f"Exported {len(tabs)} tabs to {output_path}", file=sys.stderr)
+
+    # Phase 6: Close tabs
+    if args.close_tabs and tabs:
+        if sys.stdin.isatty():
+            answer = input(f"Close {len(tabs)} tabs in Safari? [y/N] ")
+            if answer.strip().lower() != "y":
+                return
+        print("Closing tabs in Safari...", file=sys.stderr)
+        close_tabs(tabs)
+        print(f"Closed {len(tabs)} tabs.", file=sys.stderr)
 
 
 if __name__ == "__main__":
