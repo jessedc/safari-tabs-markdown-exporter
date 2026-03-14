@@ -1,0 +1,941 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		88E781CD2F64B23A009A0CB7 /* Bookmarkr Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 88E781CC2F64B23A009A0CB7 /* Bookmarkr Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88E781D72F64B23A009A0CB7 /* Bookmarkr Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 88E781D62F64B23A009A0CB7 /* Bookmarkr Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		88E781CE2F64B23A009A0CB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E781932F64B238009A0CB7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88E781CB2F64B23A009A0CB7;
+			remoteInfo = "Bookmarkr Extension (iOS)";
+		};
+		88E781D82F64B23A009A0CB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88E781932F64B238009A0CB7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88E781D52F64B23A009A0CB7;
+			remoteInfo = "Bookmarkr Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		88E781FF2F64B23A009A0CB7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				88E781CD2F64B23A009A0CB7 /* Bookmarkr Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E782092F64B23A009A0CB7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				88E781D72F64B23A009A0CB7 /* Bookmarkr Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		88E781AF2F64B23A009A0CB7 /* Bookmarkr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookmarkr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88E781C12F64B23A009A0CB7 /* Bookmarkr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookmarkr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88E781CC2F64B23A009A0CB7 /* Bookmarkr Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookmarkr Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		88E781D62F64B23A009A0CB7 /* Bookmarkr Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookmarkr Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		88E781FA2F64B23A009A0CB7 /* Exceptions for "Shared (App)" folder in "Bookmarkr (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = 88E781AE2F64B23A009A0CB7 /* Bookmarkr (iOS) */;
+		};
+		88E781FE2F64B23A009A0CB7 /* Exceptions for "iOS (Extension)" folder in "Bookmarkr Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 88E781CB2F64B23A009A0CB7 /* Bookmarkr Extension (iOS) */;
+		};
+		88E782032F64B23A009A0CB7 /* Exceptions for "iOS (App)" folder in "Bookmarkr (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 88E781AE2F64B23A009A0CB7 /* Bookmarkr (iOS) */;
+		};
+		88E782042F64B23A009A0CB7 /* Exceptions for "Shared (App)" folder in "Bookmarkr (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = 88E781C02F64B23A009A0CB7 /* Bookmarkr (macOS) */;
+		};
+		88E782082F64B23A009A0CB7 /* Exceptions for "macOS (Extension)" folder in "Bookmarkr Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 88E781D52F64B23A009A0CB7 /* Bookmarkr Extension (macOS) */;
+		};
+		88E7820D2F64B23A009A0CB7 /* Exceptions for "Shared (Extension)" folder in "Bookmarkr Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = 88E781CB2F64B23A009A0CB7 /* Bookmarkr Extension (iOS) */;
+		};
+		88E7820E2F64B23A009A0CB7 /* Exceptions for "Shared (Extension)" folder in "Bookmarkr Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = 88E781D52F64B23A009A0CB7 /* Bookmarkr Extension (macOS) */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		88E781972F64B238009A0CB7 /* Shared (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				88E781FA2F64B23A009A0CB7 /* Exceptions for "Shared (App)" folder in "Bookmarkr (iOS)" target */,
+				88E782042F64B23A009A0CB7 /* Exceptions for "Shared (App)" folder in "Bookmarkr (macOS)" target */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		88E781A02F64B239009A0CB7 /* Shared (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				88E7820D2F64B23A009A0CB7 /* Exceptions for "Shared (Extension)" folder in "Bookmarkr Extension (iOS)" target */,
+				88E7820E2F64B23A009A0CB7 /* Exceptions for "Shared (Extension)" folder in "Bookmarkr Extension (macOS)" target */,
+			);
+			explicitFolders = (
+				Resources/_locales,
+				Resources/images,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		88E781B12F64B23A009A0CB7 /* iOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				88E782032F64B23A009A0CB7 /* Exceptions for "iOS (App)" folder in "Bookmarkr (iOS)" target */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		88E781C22F64B23A009A0CB7 /* macOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		88E781D02F64B23A009A0CB7 /* iOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				88E781FE2F64B23A009A0CB7 /* Exceptions for "iOS (Extension)" folder in "Bookmarkr Extension (iOS)" target */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		88E781DA2F64B23A009A0CB7 /* macOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				88E782082F64B23A009A0CB7 /* Exceptions for "macOS (Extension)" folder in "Bookmarkr Extension (macOS)" target */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		88E781AC2F64B23A009A0CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781BE2F64B23A009A0CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781C92F64B23A009A0CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781D32F64B23A009A0CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		88E781922F64B238009A0CB7 = {
+			isa = PBXGroup;
+			children = (
+				88E781972F64B238009A0CB7 /* Shared (App) */,
+				88E781A02F64B239009A0CB7 /* Shared (Extension) */,
+				88E781B12F64B23A009A0CB7 /* iOS (App) */,
+				88E781C22F64B23A009A0CB7 /* macOS (App) */,
+				88E781D02F64B23A009A0CB7 /* iOS (Extension) */,
+				88E781DA2F64B23A009A0CB7 /* macOS (Extension) */,
+				88E781B02F64B23A009A0CB7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		88E781B02F64B23A009A0CB7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88E781AF2F64B23A009A0CB7 /* Bookmarkr.app */,
+				88E781C12F64B23A009A0CB7 /* Bookmarkr.app */,
+				88E781CC2F64B23A009A0CB7 /* Bookmarkr Extension.appex */,
+				88E781D62F64B23A009A0CB7 /* Bookmarkr Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		88E781AE2F64B23A009A0CB7 /* Bookmarkr (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88E782002F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr (iOS)" */;
+			buildPhases = (
+				88E781AB2F64B23A009A0CB7 /* Sources */,
+				88E781AC2F64B23A009A0CB7 /* Frameworks */,
+				88E781AD2F64B23A009A0CB7 /* Resources */,
+				88E781FF2F64B23A009A0CB7 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88E781CF2F64B23A009A0CB7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				88E781B12F64B23A009A0CB7 /* iOS (App) */,
+			);
+			name = "Bookmarkr (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "Bookmarkr (iOS)";
+			productReference = 88E781AF2F64B23A009A0CB7 /* Bookmarkr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		88E781C02F64B23A009A0CB7 /* Bookmarkr (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88E7820A2F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr (macOS)" */;
+			buildPhases = (
+				88E781BD2F64B23A009A0CB7 /* Sources */,
+				88E781BE2F64B23A009A0CB7 /* Frameworks */,
+				88E781BF2F64B23A009A0CB7 /* Resources */,
+				88E782092F64B23A009A0CB7 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88E781D92F64B23A009A0CB7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				88E781C22F64B23A009A0CB7 /* macOS (App) */,
+			);
+			name = "Bookmarkr (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "Bookmarkr (macOS)";
+			productReference = 88E781C12F64B23A009A0CB7 /* Bookmarkr.app */;
+			productType = "com.apple.product-type.application";
+		};
+		88E781CB2F64B23A009A0CB7 /* Bookmarkr Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88E781FB2F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr Extension (iOS)" */;
+			buildPhases = (
+				88E781C82F64B23A009A0CB7 /* Sources */,
+				88E781C92F64B23A009A0CB7 /* Frameworks */,
+				88E781CA2F64B23A009A0CB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				88E781D02F64B23A009A0CB7 /* iOS (Extension) */,
+			);
+			name = "Bookmarkr Extension (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "Bookmarkr Extension (iOS)";
+			productReference = 88E781CC2F64B23A009A0CB7 /* Bookmarkr Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		88E781D52F64B23A009A0CB7 /* Bookmarkr Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88E782052F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr Extension (macOS)" */;
+			buildPhases = (
+				88E781D22F64B23A009A0CB7 /* Sources */,
+				88E781D32F64B23A009A0CB7 /* Frameworks */,
+				88E781D42F64B23A009A0CB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				88E781DA2F64B23A009A0CB7 /* macOS (Extension) */,
+			);
+			name = "Bookmarkr Extension (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "Bookmarkr Extension (macOS)";
+			productReference = 88E781D62F64B23A009A0CB7 /* Bookmarkr Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		88E781932F64B238009A0CB7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					88E781AE2F64B23A009A0CB7 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					88E781C02F64B23A009A0CB7 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					88E781CB2F64B23A009A0CB7 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					88E781D52F64B23A009A0CB7 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 88E781962F64B238009A0CB7 /* Build configuration list for PBXProject "Bookmarkr" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 88E781922F64B238009A0CB7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 88E781B02F64B23A009A0CB7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				88E781AE2F64B23A009A0CB7 /* Bookmarkr (iOS) */,
+				88E781C02F64B23A009A0CB7 /* Bookmarkr (macOS) */,
+				88E781CB2F64B23A009A0CB7 /* Bookmarkr Extension (iOS) */,
+				88E781D52F64B23A009A0CB7 /* Bookmarkr Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		88E781AD2F64B23A009A0CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781BF2F64B23A009A0CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781CA2F64B23A009A0CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781D42F64B23A009A0CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		88E781AB2F64B23A009A0CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781BD2F64B23A009A0CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781C82F64B23A009A0CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E781D22F64B23A009A0CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		88E781CF2F64B23A009A0CB7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88E781CB2F64B23A009A0CB7 /* Bookmarkr Extension (iOS) */;
+			targetProxy = 88E781CE2F64B23A009A0CB7 /* PBXContainerItemProxy */;
+		};
+		88E781D92F64B23A009A0CB7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88E781D52F64B23A009A0CB7 /* Bookmarkr Extension (macOS) */;
+			targetProxy = 88E781D82F64B23A009A0CB7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		88E781FC2F64B23A009A0CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bookmarkr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr.Extension;
+				PRODUCT_NAME = "Bookmarkr Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		88E781FD2F64B23A009A0CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bookmarkr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr.Extension;
+				PRODUCT_NAME = "Bookmarkr Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		88E782012F64B23A009A0CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Bookmarkr;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr;
+				PRODUCT_NAME = Bookmarkr;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		88E782022F64B23A009A0CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Bookmarkr;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr;
+				PRODUCT_NAME = Bookmarkr;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		88E782062F64B23A009A0CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bookmarkr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr.Extension;
+				PRODUCT_NAME = "Bookmarkr Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		88E782072F64B23A009A0CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bookmarkr Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr.Extension;
+				PRODUCT_NAME = "Bookmarkr Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		88E7820B2F64B23A009A0CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Bookmarkr;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr;
+				PRODUCT_NAME = Bookmarkr;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		88E7820C2F64B23A009A0CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Bookmarkr;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jcmultimedia.Bookmarkr;
+				PRODUCT_NAME = Bookmarkr;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		88E7820F2F64B23A009A0CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		88E782102F64B23A009A0CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = HKAHNB7JV2;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		88E781962F64B238009A0CB7 /* Build configuration list for PBXProject "Bookmarkr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E7820F2F64B23A009A0CB7 /* Debug */,
+				88E782102F64B23A009A0CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		88E781FB2F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E781FC2F64B23A009A0CB7 /* Debug */,
+				88E781FD2F64B23A009A0CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		88E782002F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E782012F64B23A009A0CB7 /* Debug */,
+				88E782022F64B23A009A0CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		88E782052F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E782062F64B23A009A0CB7 /* Debug */,
+				88E782072F64B23A009A0CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		88E7820A2F64B23A009A0CB7 /* Build configuration list for PBXNativeTarget "Bookmarkr (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E7820B2F64B23A009A0CB7 /* Debug */,
+				88E7820C2F64B23A009A0CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 88E781932F64B238009A0CB7 /* Project object */;
+}
