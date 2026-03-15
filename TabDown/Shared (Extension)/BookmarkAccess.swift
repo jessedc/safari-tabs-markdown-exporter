@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.jcmultimedia.TabDown.Extension", category: "bookmark")
 
 struct BookmarkAccess {
 
@@ -13,7 +16,11 @@ struct BookmarkAccess {
     private static let bookmarkFileName = "outputFolderBookmark"
 
     private static var containerURL: URL? {
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+        if url == nil {
+            logger.error("containerURL: failed to get app group container for \(appGroupID, privacy: .public)")
+        }
+        return url
     }
 
     private static var bookmarkFileURL: URL? {
@@ -21,33 +28,61 @@ struct BookmarkAccess {
     }
 
     static func saveOutputFolder(url: URL) throws {
+        logger.info("saveOutputFolder: saving bookmark for \(url.path, privacy: .public)")
         let bookmarkData = try url.bookmarkData(
             options: .withSecurityScope,
             includingResourceValuesForKeys: nil,
             relativeTo: nil
         )
         guard let fileURL = bookmarkFileURL else {
+            logger.error("saveOutputFolder: cannot get bookmark file URL")
             throw NSError(domain: "TabDown", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
         }
         try bookmarkData.write(to: fileURL)
+        logger.info("saveOutputFolder: bookmark saved (\(bookmarkData.count) bytes)")
     }
 
     static func resolveOutputFolder() throws -> URL {
+        logger.info("resolveOutputFolder: resolving bookmark")
         guard let fileURL = bookmarkFileURL else {
+            logger.error("resolveOutputFolder: cannot get bookmark file URL")
             throw NSError(domain: "TabDown", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
         }
         let bookmarkData = try Data(contentsOf: fileURL)
+        logger.debug("resolveOutputFolder: read bookmark data (\(bookmarkData.count) bytes)")
         var isStale = false
         let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
         if isStale {
+            logger.warning("resolveOutputFolder: bookmark is stale, refreshing")
             let newData = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
             try newData.write(to: fileURL)
+            logger.info("resolveOutputFolder: stale bookmark refreshed")
         }
+        logger.info("resolveOutputFolder: resolved to \(url.path, privacy: .public)")
         return url
     }
 
     static func hasOutputFolder() -> Bool {
-        guard let fileURL = bookmarkFileURL else { return false }
-        return FileManager.default.fileExists(atPath: fileURL.path)
+        guard let fileURL = bookmarkFileURL else {
+            logger.debug("hasOutputFolder: no bookmark file URL available")
+            return false
+        }
+        let exists = FileManager.default.fileExists(atPath: fileURL.path)
+        logger.debug("hasOutputFolder: \(exists)")
+        return exists
+    }
+
+    static func exportDirectory() throws -> URL {
+        guard let container = containerURL else {
+            throw NSError(domain: "TabDown", code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
+        }
+        let dir = container.appendingPathComponent("exports")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir
+    }
+
+    static func hasExportDirectory() -> Bool {
+        return containerURL != nil
     }
 }

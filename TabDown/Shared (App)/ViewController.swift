@@ -6,6 +6,7 @@
 //
 
 import WebKit
+import os.log
 
 #if os(iOS)
 import UIKit
@@ -16,6 +17,8 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
+private let logger = Logger(subsystem: "com.jcmultimedia.TabDown", category: "app")
+
 let extensionBundleIdentifier = "com.jcmultimedia.TabDown.Extension"
 let appGroupID = "group.com.jcmultimedia.TabDown"
 
@@ -25,6 +28,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        logger.info("viewDidLoad: initializing")
 
         self.webView.navigationDelegate = self
 
@@ -38,6 +42,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        logger.info("webView didFinish: navigation complete")
 #if os(iOS)
         webView.evaluateJavaScript("show('ios')")
 #elseif os(macOS)
@@ -45,9 +50,11 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
             guard let state = state, error == nil else {
+                logger.error("webView didFinish: failed to get extension state — \(error?.localizedDescription ?? "unknown error", privacy: .public)")
                 return
             }
 
+            logger.info("webView didFinish: extension enabled=\(state.isEnabled)")
             DispatchQueue.main.async {
                 if #available(macOS 13, *) {
                     webView.evaluateJavaScript("show('mac', \(state.isEnabled), true)")
@@ -60,6 +67,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         // Send current settings to the web view
         let folderPath = currentOutputFolderPath() ?? ""
         let patterns = loadExcludedPatterns()
+        logger.info("webView didFinish: outputFolder=\(folderPath, privacy: .public), excludedPatterns=\(patterns.count)")
         let patternsJSON = (try? String(data: JSONSerialization.data(withJSONObject: patterns), encoding: .utf8)) ?? "[]"
         webView.evaluateJavaScript("updateSettings('\(folderPath.replacingOccurrences(of: "'", with: "\\'"))', \(patternsJSON))")
 #endif
@@ -67,18 +75,28 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
 #if os(macOS)
-        guard let body = message.body as? String else { return }
+        guard let body = message.body as? String else {
+            logger.warning("userContentController: received non-string message body")
+            return
+        }
+
+        logger.info("userContentController: received message=\(body.prefix(50), privacy: .public)")
 
         switch body {
         case "open-preferences":
+            logger.info("userContentController: opening Safari extension preferences")
             SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-                guard error == nil else { return }
+                guard error == nil else {
+                    logger.error("userContentController: failed to open preferences — \(error!.localizedDescription, privacy: .public)")
+                    return
+                }
                 DispatchQueue.main.async {
                     NSApp.terminate(self)
                 }
             }
 
         case "chooseFolder":
+            logger.info("userContentController: presenting folder picker")
             let panel = NSOpenPanel()
             panel.canChooseDirectories = true
             panel.canChooseFiles = false
@@ -87,21 +105,30 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             panel.prompt = "Select Output Folder"
 
             panel.begin { [weak self] response in
-                guard response == .OK, let url = panel.url else { return }
+                guard response == .OK, let url = panel.url else {
+                    logger.info("userContentController: folder picker cancelled")
+                    return
+                }
+                logger.info("userContentController: user selected folder \(url.path, privacy: .public)")
                 do {
                     let bookmarkData = try url.bookmarkData(
                         options: .withSecurityScope,
                         includingResourceValuesForKeys: nil,
                         relativeTo: nil
                     )
-                    guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else { return }
+                    guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
+                        logger.error("userContentController: failed to get app group container")
+                        return
+                    }
                     let bookmarkFile = containerURL.appendingPathComponent("outputFolderBookmark")
                     try bookmarkData.write(to: bookmarkFile)
+                    logger.info("userContentController: saved folder bookmark (\(bookmarkData.count) bytes)")
 
                     DispatchQueue.main.async {
                         self?.webView.evaluateJavaScript("setFolderPath('\(url.path.replacingOccurrences(of: "'", with: "\\'"))')")
                     }
                 } catch {
+                    logger.error("userContentController: failed to save bookmark — \(error.localizedDescription, privacy: .public)")
                     DispatchQueue.main.async {
                         self?.webView.evaluateJavaScript("setFolderPath('')")
                     }
@@ -114,8 +141,13 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
                 let jsonString = String(body.dropFirst("savePatterns:".count))
                 if let data = jsonString.data(using: .utf8),
                    let patterns = try? JSONSerialization.jsonObject(with: data) as? [String] {
+                    logger.info("userContentController: saving \(patterns.count) excluded patterns")
                     saveExcludedPatterns(patterns)
+                } else {
+                    logger.error("userContentController: failed to parse patterns JSON")
                 }
+            } else {
+                logger.warning("userContentController: unhandled message=\(body, privacy: .public)")
             }
         }
 #endif
