@@ -99,18 +99,10 @@
 			);
 			target = 88E781C02F64B23A009A0CB7 /* TabDown (macOS) */;
 		};
-		88E782152F64B23A009A0CB7 /* Exceptions for "macOS (App)" folder in "TabDown (macOS)" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				TabDown.entitlements,
-			);
-			target = 88E781C02F64B23A009A0CB7 /* TabDown (macOS) */;
-		};
 		88E782082F64B23A009A0CB7 /* Exceptions for "macOS (Extension)" folder in "TabDown Extension (macOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				TabDownExtension.entitlements,
 			);
 			target = 88E781D52F64B23A009A0CB7 /* TabDown Extension (macOS) */;
 		};
@@ -121,7 +113,7 @@
 				Resources/_locales,
 				Resources/background.js,
 				Resources/content.js,
-				Resources/extract-content.js,
+				"Resources/extract-content.js",
 				Resources/images,
 				Resources/manifest.json,
 				Resources/popup.css,
@@ -140,7 +132,7 @@
 				Resources/_locales,
 				Resources/background.js,
 				Resources/content.js,
-				Resources/extract-content.js,
+				"Resources/extract-content.js",
 				Resources/images,
 				Resources/manifest.json,
 				Resources/popup.css,
@@ -187,9 +179,6 @@
 		};
 		88E781C22F64B23A009A0CB7 /* macOS (App) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				88E782152F64B23A009A0CB7 /* Exceptions for "macOS (App)" folder in "TabDown (macOS)" target */,
-			);
 			path = "macOS (App)";
 			sourceTree = "<group>";
 		};
@@ -725,6 +714,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TabDown;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -767,6 +757,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = TabDown;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
