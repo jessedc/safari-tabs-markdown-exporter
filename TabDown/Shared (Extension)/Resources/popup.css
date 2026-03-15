@@ -1,0 +1,114 @@
+:root {
+    color-scheme: light dark;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 300px;
+    padding: 16px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.hidden {
+    display: none !important;
+}
+
+p {
+    margin-bottom: 8px;
+}
+
+.hint {
+    color: #888;
+    font-size: 12px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #007AFF;
+    color: white;
+}
+
+button:hover {
+    background: #0066DD;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+button.secondary {
+    background: #E5E5E7;
+    color: #333;
+}
+
+button.secondary:hover {
+    background: #D1D1D6;
+}
+
+@media (prefers-color-scheme: dark) {
+    button.secondary {
+        background: #3A3A3C;
+        color: #EEE;
+    }
+    button.secondary:hover {
+        background: #4A4A4C;
+    }
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.button-row button {
+    flex: 1;
+}
+
+#progress .progress-text {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+#result-text {
+    word-break: break-all;
+}
+
+.success {
+    color: #34C759;
+}
+
+.error {
+    color: #FF3B30;
+}

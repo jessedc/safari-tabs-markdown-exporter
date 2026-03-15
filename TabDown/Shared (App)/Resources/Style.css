@@ -1,0 +1,157 @@
+* {
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    cursor: default;
+}
+
+:root {
+    color-scheme: light dark;
+
+    --spacing: 20px;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: var(--spacing);
+    margin: 0 calc(var(--spacing) * 2);
+    height: 100%;
+
+    font: -apple-system-short-body;
+    text-align: center;
+}
+
+body:not(.platform-mac, .platform-ios) :is(.platform-mac, .platform-ios) {
+    display: none;
+}
+
+body.platform-ios .platform-mac {
+    display: none;
+}
+
+body.platform-mac .platform-ios {
+    display: none;
+}
+
+body:not(.state-on, .state-off) :is(.state-on, .state-off) {
+    display: none;
+}
+
+body.state-on :is(.state-off, .state-unknown) {
+    display: none;
+}
+
+body.state-off :is(.state-on, .state-unknown) {
+    display: none;
+}
+
+button {
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.settings-section {
+    width: 100%;
+    max-width: 500px;
+    text-align: left;
+    margin-top: var(--spacing);
+    border-top: 1px solid #ccc;
+    padding-top: var(--spacing);
+}
+
+@media (prefers-color-scheme: dark) {
+    .settings-section {
+        border-top-color: #555;
+    }
+}
+
+.settings-section h2 {
+    font-size: 1em;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+.settings-section h2:first-child {
+    margin-top: 0;
+}
+
+.folder-display {
+    padding: 8px 12px;
+    background: rgba(128, 128, 128, 0.1);
+    border-radius: 6px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85em;
+    word-break: break-all;
+    margin-bottom: 8px;
+    -webkit-user-select: text;
+}
+
+.folder-display.has-path {
+    color: inherit;
+}
+
+.hint {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.pattern-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: rgba(128, 128, 128, 0.1);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85em;
+}
+
+.pattern-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pattern-input-row input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: ui-monospace, monospace;
+    background: transparent;
+    color: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+    .pattern-input-row input {
+        border-color: #555;
+    }
+}
+
+.small-btn {
+    padding: 4px 10px;
+    font-size: 0.85em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+}
+
+.small-btn:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+.remove-btn {
+    color: #FF3B30;
+    border-color: #FF3B30;
+}

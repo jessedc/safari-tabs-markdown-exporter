@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" href="../Style.css">
+    <script src="../Script.js" defer></script>
+</head>
+<body>
+    <img src="../Icon.png" width="128" height="128" alt="TabDown Icon">
+
+    <p class="platform-ios">You can turn on TabDown's Safari extension in Settings.</p>
+    <p class="platform-mac state-unknown">You can turn on TabDown's extension in Safari Extensions preferences.</p>
+    <p class="platform-mac state-on">TabDown's extension is currently on. You can turn it off in Safari Extensions preferences.</p>
+    <p class="platform-mac state-off">TabDown's extension is currently off. You can turn it on in Safari Extensions preferences.</p>
+    <button class="platform-mac open-preferences">Quit and Open Safari Extensions Preferences…</button>
+
+    <div class="platform-mac settings-section">
+        <h2>Output Folder</h2>
+        <p id="folder-path" class="folder-display">No folder selected</p>
+        <button id="choose-folder-btn">Choose Folder…</button>
+
+        <h2>Excluded URL Patterns</h2>
+        <p class="hint">Tabs matching these host/path prefixes will be excluded from exports.</p>
+        <div id="patterns-list"></div>
+        <div class="pattern-input-row">
+            <input type="text" id="pattern-input" placeholder="e.g. mail.google.com">
+            <button id="add-pattern-btn" class="small-btn">Add</button>
+        </div>
+    </div>
+</body>
+</html>

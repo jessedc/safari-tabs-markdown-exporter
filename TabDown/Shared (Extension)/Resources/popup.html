@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="popup.css">
+    <script type="module" src="popup.js"></script>
+</head>
+<body>
+    <div id="no-folder" class="hidden">
+        <p>No output folder configured.</p>
+        <p class="hint">Open the TabDown app to select an output folder.</p>
+    </div>
+
+    <div id="main-ui" class="hidden">
+        <div class="options">
+            <label><input type="checkbox" id="close-tabs"> Close tabs after saving</label>
+            <label><input type="checkbox" id="include-summaries"> Include AI summaries</label>
+        </div>
+        <button id="save-btn">Save Tabs</button>
+        <div id="progress" class="hidden">
+            <div class="progress-text"></div>
+        </div>
+    </div>
+
+    <div id="confirm-dialog" class="hidden">
+        <p id="confirm-text"></p>
+        <div class="button-row">
+            <button id="confirm-yes">Close Tabs</button>
+            <button id="confirm-no" class="secondary">Keep Open</button>
+        </div>
+    </div>
+
+    <div id="result" class="hidden">
+        <p id="result-text"></p>
+    </div>
+</body>
+</html>
