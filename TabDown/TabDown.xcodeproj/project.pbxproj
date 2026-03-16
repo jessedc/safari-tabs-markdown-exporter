@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		88E781CD2F64B23A009A0CB7 /* TabDown Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 88E781CC2F64B23A009A0CB7 /* TabDown Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		88E781D72F64B23A009A0CB7 /* TabDown Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 88E781D62F64B23A009A0CB7 /* TabDown Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88E782132F650000009A0CB7 /* DomainParser in Frameworks */ = {isa = PBXBuildFile; productRef = 88E782122F650000009A0CB7 /* DomainParser */; };
+		88E782152F650000009A0CB7 /* DomainParser in Frameworks */ = {isa = PBXBuildFile; productRef = 88E782142F650000009A0CB7 /* DomainParser */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,7 @@
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
 				Assets.xcassets,
+				ExportSyncer.swift,
 				Resources/Icon.png,
 				Resources/Script.js,
 				Resources/Style.css,
@@ -92,6 +95,7 @@
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
 				Assets.xcassets,
+				ExportSyncer.swift,
 				Resources/Icon.png,
 				Resources/Script.js,
 				Resources/Style.css,
@@ -119,6 +123,7 @@
 				Resources/popup.css,
 				Resources/popup.html,
 				Resources/popup.js,
+				Resources/Readability.js,
 				SafariWebExtensionHandler.swift,
 				Summarizer.swift,
 				TabExporter.swift,
@@ -138,6 +143,7 @@
 				Resources/popup.css,
 				Resources/popup.html,
 				Resources/popup.js,
+				Resources/Readability.js,
 				SafariWebExtensionHandler.swift,
 				Summarizer.swift,
 				TabExporter.swift,
@@ -219,6 +225,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88E782152F650000009A0CB7 /* DomainParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +233,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88E782132F650000009A0CB7 /* DomainParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +332,7 @@
 			);
 			name = "TabDown Extension (iOS)";
 			packageProductDependencies = (
+				88E782142F650000009A0CB7 /* DomainParser */,
 			);
 			productName = "TabDown Extension (iOS)";
 			productReference = 88E781CC2F64B23A009A0CB7 /* TabDown Extension.appex */;
@@ -346,6 +355,7 @@
 			);
 			name = "TabDown Extension (macOS)";
 			packageProductDependencies = (
+				88E782122F650000009A0CB7 /* DomainParser */,
 			);
 			productName = "TabDown Extension (macOS)";
 			productReference = 88E781D62F64B23A009A0CB7 /* TabDown Extension.appex */;
@@ -384,6 +394,9 @@
 			);
 			mainGroup = 88E781922F64B238009A0CB7;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				88E782112F650000009A0CB7 /* XCRemoteSwiftPackageReference "SwiftDomainParser" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 88E781B02F64B23A009A0CB7 /* Products */;
 			projectDirPath = "";
@@ -950,6 +963,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		88E782112F650000009A0CB7 /* XCRemoteSwiftPackageReference "SwiftDomainParser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dashlane/SwiftDomainParser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		88E782122F650000009A0CB7 /* DomainParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88E782112F650000009A0CB7 /* XCRemoteSwiftPackageReference "SwiftDomainParser" */;
+			productName = DomainParser;
+		};
+		88E782142F650000009A0CB7 /* DomainParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88E782112F650000009A0CB7 /* XCRemoteSwiftPackageReference "SwiftDomainParser" */;
+			productName = DomainParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 88E781932F64B238009A0CB7 /* Project object */;
 }

@@ -26,17 +26,17 @@ async function handleSummarization(tabs) {
             console.log(`[background] injecting extract-content.js into tab ${tab.id}`);
             const results = await browser.scripting.executeScript({
                 target: { tabId: tab.id },
-                files: ["extract-content.js"]
+                files: ["Readability.js", "extract-content.js"]
             });
 
-            const content = results?.[0]?.result || "";
+            const content = results?.[results.length - 1]?.result || "";
             console.log(`[background] extracted content from tab ${tab.id}: ${content.length} chars`);
 
             if (content && content.length > 10) {
                 console.log(`[background] requesting summary from native app for tab ${tab.id}`);
                 const response = await browser.runtime.sendNativeMessage(
                     "application.id",
-                    { action: "summarize", text: content }
+                    { action: "summarize", text: content, title: tab.title, url: tab.url }
                 );
                 console.log(`[background] summarize response for tab ${tab.id}:`, response.success, response.summary?.substring(0, 80));
                 if (response.success) {

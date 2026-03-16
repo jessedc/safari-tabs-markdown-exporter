@@ -51,18 +51,24 @@ struct Summarizer {
     }
 
     #if canImport(FoundationModels)
-    static func summarize(text: String) async -> (success: Bool, summary: String) {
+    static func summarize(text: String, title: String? = nil, url: String? = nil) async -> (success: Bool, summary: String) {
         logger.info("summarize: input text \(text.count) chars")
         let truncated = truncateToWords(text)
         if truncated.count < text.count {
             logger.info("summarize: truncated from \(text.count) to \(truncated.count) chars (\(maxWords) word limit)")
         }
 
+        var prompt = ""
+        if let title = title { prompt += "Title: \(title)\n" }
+        if let url = url { prompt += "URL: \(url)\n" }
+        if !prompt.isEmpty { prompt += "\n" }
+        prompt += truncated
+
         logger.info("summarize: creating LanguageModelSession and sending request")
         let session = LanguageModelSession(instructions: systemPrompt)
         do {
-            let response = try await session.respond(to: truncated)
-            let result = String(describing: response).trimmingCharacters(in: .whitespacesAndNewlines)
+            let response = try await session.respond(to: prompt)
+            let result = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
             logger.info("summarize: got response, \(result.count) chars")
 
             if isRefusal(result) {

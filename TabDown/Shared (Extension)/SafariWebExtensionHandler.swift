@@ -60,7 +60,7 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
 
         do {
             let outputFolder = try BookmarkAccess.exportDirectory()
-            logger.info("saveTabs: using export directory=\(outputFolder.path, privacy: .public)")
+            logger.info("saveTabs: writing to exports directory=\(outputFolder.path, privacy: .public)")
 
             let filePath = try TabExporter.saveMarkdown(tabs: tabs, outputFolder: outputFolder)
             logger.info("saveTabs: saved to \(filePath, privacy: .public)")
@@ -72,7 +72,7 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
     }
 
     private func handleGetSettings(context: NSExtensionContext) {
-        let hasFolder = BookmarkAccess.hasExportDirectory()
+        let hasFolder = BookmarkAccess.hasOutputFolder()
         logger.info("getSettings: hasOutputFolder=\(hasFolder)")
         sendResponse(context: context, response: [
             "success": true,
@@ -104,12 +104,14 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
             return
         }
 
-        logger.info("summarize: received text of \(text.count) chars")
+        let title = message["title"] as? String
+        let url = message["url"] as? String
+        logger.info("summarize: received text of \(text.count) chars, title=\(title ?? "nil", privacy: .public)")
 
         if #available(macOS 26, *) {
             #if canImport(FoundationModels)
             Task {
-                let result = await Summarizer.summarize(text: text)
+                let result = await Summarizer.summarize(text: text, title: title, url: url)
                 logger.info("summarize: success=\(result.success), summary length=\(result.summary.count)")
                 sendResponse(context: context, response: [
                     "success": result.success,

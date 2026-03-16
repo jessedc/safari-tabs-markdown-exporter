@@ -106,12 +106,35 @@ xcodebuild -project TabDown/TabDown.xcodeproj \
 open ~/Library/Developer/Xcode/DerivedData/TabDown-*/Build/Products/Debug/TabDown.app
 ```
 
+### CLI Sync
+
+The companion app supports a `--sync` flag that moves exported markdown files from the app group container to your configured output folder — without launching the UI. This is useful for automation (e.g., launchd, shell scripts).
+
+**Prerequisite:** You must configure an output folder via the companion app UI at least once.
+
+```bash
+# Run sync (use the path to your built app)
+/path/to/TabDown.app/Contents/MacOS/TabDown --sync
+
+# Example with DerivedData path
+~/Library/Developer/Xcode/DerivedData/TabDown-*/Build/Products/Debug/TabDown.app/Contents/MacOS/TabDown --sync
+```
+
+**Output:**
+```
+Moved: 2026-03-16 14-30-00-saved-tabs.md
+```
+
+If no files are pending: `No files to sync.`
+If no output folder is configured, an error is printed to stderr and the process exits with code 1.
+
 ### Project Structure
 
 ```
 TabDown/
 ├── Shared (App)/                    # Companion app (shared iOS/macOS)
 │   ├── ViewController.swift         # Folder picker, excluded URL management
+│   ├── ExportSyncer.swift           # Shared sync logic (used by UI + CLI)
 │   └── Resources/
 │       ├── Base.lproj/Main.html     # App UI
 │       ├── Script.js                # App UI logic

@@ -43,6 +43,9 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         logger.info("webView didFinish: navigation complete")
+
+        // Sync any exports from the app group container to the user-selected folder
+        syncExportsToOutputFolder()
 #if os(iOS)
         webView.evaluateJavaScript("show('ios')")
 #elseif os(macOS)
@@ -154,6 +157,24 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
     }
 
 #if os(macOS)
+    /// Moves files from the app group exports directory to the user-selected output folder.
+    /// The extension writes to the exports directory because it cannot resolve security-scoped
+    /// bookmarks (sandbox restriction on DetachedSignatures). The app can resolve them, so it
+    /// syncs on launch.
+    private func syncExportsToOutputFolder() {
+        do {
+            let result = try ExportSyncer.sync()
+            for file in result.movedFiles {
+                logger.info("syncExports: moved \(file, privacy: .public)")
+            }
+            for err in result.errors {
+                logger.error("syncExports: failed to move \(err.file, privacy: .public) — \(err.error, privacy: .public)")
+            }
+        } catch {
+            logger.info("syncExports: \(String(describing: error), privacy: .public)")
+        }
+    }
+
     private func currentOutputFolderPath() -> String? {
         guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else { return nil }
         let bookmarkFile = containerURL.appendingPathComponent("outputFolderBookmark")

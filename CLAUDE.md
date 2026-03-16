@@ -24,6 +24,9 @@ uv run --script export_tabs.py --uninstall-schedule
 
 # Build the Safari extension (macOS)
 xcodebuild -project TabDown/TabDown.xcodeproj -scheme "TabDown (macOS)" -configuration Debug build -allowProvisioningUpdates
+
+# Sync exported tabs to output folder (CLI, no UI)
+/path/to/TabDown.app/Contents/MacOS/TabDown --sync
 ```
 
 ## Architecture
@@ -63,6 +66,8 @@ Native Safari Web Extension (MV3) with macOS companion app.
 - `Shared (Extension)/Resources/background.js` — Summarization orchestration (service worker)
 - `Shared (Extension)/Resources/extract-content.js` — Content extraction injected into tabs
 - `Shared (App)/ViewController.swift` — Companion app: folder picker, excluded URL patterns
+- `Shared (App)/ExportSyncer.swift` — Shared sync logic (moves exports to output folder)
+- `macOS (App)/AppDelegate.swift` — `--sync` CLI mode (runs sync without UI)
 
 **Message protocol** — all messages use `{ action: "...", ... }`:
 - `saveTabs` — saves tabs to markdown file in selected output folder

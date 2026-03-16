@@ -5,6 +5,7 @@
 //  Created by Jesse Collis on 14/3/2026.
 //
 
+import DomainParser
 import Foundation
 import os.log
 
@@ -40,12 +41,27 @@ struct TabExporter {
         return fileURL.path
     }
 
+    private static let excludedSchemes: Set<String> = ["favorites", "history", "bookmarks"]
+    private static let excludedURLs: Set<String> = ["about:blank"]
+
     static func filterExcluded(tabs: [[String: Any]], patterns: [String]) -> [[String: Any]] {
-        guard !patterns.isEmpty else { return tabs }
         return tabs.filter { tab in
-            guard let urlString = tab["url"] as? String,
-                  let components = URLComponents(string: urlString),
+            guard let urlString = tab["url"] as? String else { return true }
+
+            // Exclude built-in Safari URLs
+            if excludedURLs.contains(urlString) {
+                logger.debug("filterExcluded: excluding built-in URL \(urlString, privacy: .public)")
+                return false
+            }
+            if let scheme = URLComponents(string: urlString)?.scheme?.lowercased(),
+               excludedSchemes.contains(scheme) {
+                logger.debug("filterExcluded: excluding built-in scheme \(urlString, privacy: .public)")
+                return false
+            }
+
+            guard let components = URLComponents(string: urlString),
                   let host = components.host else { return true }
+            guard !patterns.isEmpty else { return true }
             let hostPath = (host + (components.path)).lowercased()
             let excluded = patterns.contains { pattern in
                 hostPath.hasPrefix(pattern.lowercased())
@@ -85,6 +101,16 @@ struct TabExporter {
         }
     }
 
+    private static let domainParser = try? DomainParser()
+
+    /// Extracts the registrable domain from a host string using the Public Suffix List.
+    static func registrableDomain(from host: String) -> String {
+        if let domain = domainParser?.parse(host: host)?.domain {
+            return domain
+        }
+        return host.lowercased()
+    }
+
     static func renderMarkdown(tabs: [[String: Any]], dateString: String) -> String {
         var lines = [
             "# Safari Tabs Export",
@@ -96,15 +122,42 @@ struct TabExporter {
             ""
         ]
 
+        // Group tabs by top-level domain
+        var groups: [(tld: String, tabs: [[String: Any]])] = []
+        var groupIndex: [String: Int] = [:]
+
         for tab in tabs {
-            let title = (tab["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? (tab["url"] as? String ?? "")
             let url = tab["url"] as? String ?? ""
-            lines.append("- [\(title)](\(url))")
-            if let summary = tab["summary"] as? String, !summary.isEmpty {
-                lines.append("  > \(summary)")
+            let host = URLComponents(string: url)?.host ?? ""
+            let tld = host.isEmpty ? "" : registrableDomain(from: host)
+
+            if let idx = groupIndex[tld] {
+                groups[idx].tabs.append(tab)
+            } else {
+                groupIndex[tld] = groups.count
+                groups.append((tld: tld, tabs: [tab]))
             }
         }
-        lines.append("")
+
+        // Sort groups alphabetically by TLD
+        groups.sort { $0.tld < $1.tld }
+
+        for group in groups {
+            if !group.tld.isEmpty {
+                lines.append("### \(group.tld)")
+            }
+            for tab in group.tabs {
+                let title = (tab["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? (tab["url"] as? String ?? "")
+                let url = tab["url"] as? String ?? ""
+                let domain = URLComponents(string: url)?.host ?? ""
+                let displayTitle = domain.isEmpty ? title : "\(title) (\(domain))"
+                lines.append("- [\(displayTitle)](\(url))")
+                if let summary = tab["summary"] as? String, !summary.isEmpty {
+                    lines.append("  > \(summary)")
+                }
+            }
+            lines.append("")
+        }
 
         return lines.joined(separator: "\n")
     }

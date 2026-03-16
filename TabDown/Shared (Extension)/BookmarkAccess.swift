@@ -42,24 +42,17 @@ struct BookmarkAccess {
         logger.info("saveOutputFolder: bookmark saved (\(bookmarkData.count) bytes)")
     }
 
-    static func resolveOutputFolder() throws -> URL {
-        logger.info("resolveOutputFolder: resolving bookmark")
-        guard let fileURL = bookmarkFileURL else {
-            logger.error("resolveOutputFolder: cannot get bookmark file URL")
-            throw NSError(domain: "TabDown", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
+    /// Returns the exports directory in the app group container.
+    /// The extension writes here; the companion app syncs files to the user-selected folder.
+    static func exportDirectory() throws -> URL {
+        guard let container = containerURL else {
+            throw NSError(domain: "TabDown", code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
         }
-        let bookmarkData = try Data(contentsOf: fileURL)
-        logger.debug("resolveOutputFolder: read bookmark data (\(bookmarkData.count) bytes)")
-        var isStale = false
-        let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-        if isStale {
-            logger.warning("resolveOutputFolder: bookmark is stale, refreshing")
-            let newData = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-            try newData.write(to: fileURL)
-            logger.info("resolveOutputFolder: stale bookmark refreshed")
-        }
-        logger.info("resolveOutputFolder: resolved to \(url.path, privacy: .public)")
-        return url
+        let dir = container.appendingPathComponent("exports")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        logger.debug("exportDirectory: \(dir.path, privacy: .public)")
+        return dir
     }
 
     static func hasOutputFolder() -> Bool {
@@ -72,17 +65,4 @@ struct BookmarkAccess {
         return exists
     }
 
-    static func exportDirectory() throws -> URL {
-        guard let container = containerURL else {
-            throw NSError(domain: "TabDown", code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "Cannot access App Group container"])
-        }
-        let dir = container.appendingPathComponent("exports")
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir
-    }
-
-    static func hasExportDirectory() -> Bool {
-        return containerURL != nil
-    }
 }
