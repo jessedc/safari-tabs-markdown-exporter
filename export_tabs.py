@@ -311,24 +311,30 @@ def render_markdown(
         "# Safari Tabs Export",
         "",
         f"**Date:** {date.today().isoformat()}",
-        f"**Total tabs:** {total_count} | **Unique:** {len(tabs)} | **Duplicates removed:** {dup_count}",
-        f"**Windows:** {num_windows}",
         "",
         "---",
         "",
     ]
 
-    def _render_tab(tab: dict) -> list[str]:
+    # Section 1: links only
+    for tab in tabs:
         title = tab["title"] or tab["url"]
-        entry = [f"- [{title}]({tab['url']})"]
+        lines.append(f"- [{title}]({tab['url']})")
+    lines.append("")
+
+    # Section 2: links with summaries
+    summary_lines = []
+    for tab in tabs:
         summary = summaries.get(tab["url"], "")
         if summary:
-            entry.append(f"  > {summary}")
-        return entry
-
-    for tab in tabs:
-        lines.extend(_render_tab(tab))
-    lines.append("")
+            title = tab["title"] or tab["url"]
+            summary_lines.append(f"- [{title}]({tab['url']})")
+            summary_lines.append(f"  {summary}")
+    if summary_lines:
+        lines.append("---")
+        lines.append("")
+        lines.extend(summary_lines)
+        lines.append("")
 
     return "\n".join(lines)
 

@@ -116,7 +116,6 @@ struct TabExporter {
             "# Safari Tabs Export",
             "",
             "**Date:** \(dateString)",
-            "**Tabs:** \(tabs.count)",
             "",
             "---",
             ""
@@ -142,6 +141,7 @@ struct TabExporter {
         // Sort groups alphabetically by TLD
         groups.sort { $0.tld < $1.tld }
 
+        // Section 1: links only, grouped by domain
         for group in groups {
             if !group.tld.isEmpty {
                 lines.append("### \(group.tld)")
@@ -152,10 +152,26 @@ struct TabExporter {
                 let domain = URLComponents(string: url)?.host ?? ""
                 let displayTitle = domain.isEmpty ? title : "\(title) (\(domain))"
                 lines.append("- [\(displayTitle)](\(url))")
-                if let summary = tab["summary"] as? String, !summary.isEmpty {
-                    lines.append("  > \(summary)")
-                }
             }
+            lines.append("")
+        }
+
+        // Section 2: links with summaries (flat, no domain headings)
+        var summaryLines: [String] = []
+        for tab in tabs {
+            if let summary = tab["summary"] as? String, !summary.isEmpty {
+                let title = (tab["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? (tab["url"] as? String ?? "")
+                let url = tab["url"] as? String ?? ""
+                let domain = URLComponents(string: url)?.host ?? ""
+                let displayTitle = domain.isEmpty ? title : "\(title) (\(domain))"
+                summaryLines.append("- [\(displayTitle)](\(url))")
+                summaryLines.append("  \(summary)")
+            }
+        }
+        if !summaryLines.isEmpty {
+            lines.append("---")
+            lines.append("")
+            lines.append(contentsOf: summaryLines)
             lines.append("")
         }
 
