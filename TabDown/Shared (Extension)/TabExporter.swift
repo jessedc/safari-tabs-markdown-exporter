@@ -155,6 +155,7 @@ struct TabExporter {
             }
             lines.append("")
         }
+        lines.append("")
 
         // Section 2: links with summaries (flat, no domain headings)
         var summaryLines: [String] = []
