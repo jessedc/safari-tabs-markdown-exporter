@@ -46,7 +46,7 @@ struct TabExporter {
 
     static func filterExcluded(tabs: [[String: Any]], patterns: [String]) -> [[String: Any]] {
         return tabs.filter { tab in
-            guard let urlString = tab["url"] as? String else { return true }
+            guard let urlString = tab["url"] as? String, !urlString.isEmpty else { return false }
 
             // Exclude built-in Safari URLs
             if excludedURLs.contains(urlString) {
@@ -127,6 +127,7 @@ struct TabExporter {
 
         for tab in tabs {
             let url = tab["url"] as? String ?? ""
+            guard !url.isEmpty else { continue }
             let host = URLComponents(string: url)?.host ?? ""
             let tld = host.isEmpty ? "" : registrableDomain(from: host)
 
@@ -153,13 +154,13 @@ struct TabExporter {
                 let displayTitle = domain.isEmpty ? title : "\(title) (\(domain))"
                 lines.append("- [\(displayTitle)](\(url))")
             }
-            lines.append("")
         }
         lines.append("")
 
         // Section 2: links with summaries (flat, no domain headings)
         var summaryLines: [String] = []
         for tab in tabs {
+            guard let urlCheck = tab["url"] as? String, !urlCheck.isEmpty else { continue }
             if let summary = tab["summary"] as? String, !summary.isEmpty {
                 let title = (tab["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? (tab["url"] as? String ?? "")
                 let url = tab["url"] as? String ?? ""

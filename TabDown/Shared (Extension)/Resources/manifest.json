@@ -24,6 +24,6 @@
         "default_icon": "images/toolbar-icon.svg"
     },
 
-    "permissions": [ "tabs", "storage", "scripting", "nativeMessaging" ],
+    "permissions": [ "tabs", "storage", "scripting", "nativeMessaging", "webNavigation" ],
     "host_permissions": [ "<all_urls>" ]
 }

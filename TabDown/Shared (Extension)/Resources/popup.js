@@ -58,7 +58,9 @@ saveBtn.addEventListener("click", async () => {
 
     try {
         const allTabs = await browser.tabs.query({});
-        const tabs = allTabs.map(t => ({ url: t.url, title: t.title, id: t.id }));
+        const tabs = allTabs
+            .filter(t => t.url && t.url !== "about:blank")
+            .map(t => ({ url: t.url, title: t.title || t.url, id: t.id, status: t.status }));
         console.log("[popup] save: queried tabs, count =", tabs.length);
 
         if (tabs.length === 0) {
@@ -117,7 +119,8 @@ saveBtn.addEventListener("click", async () => {
 browser.runtime.onMessage.addListener((message) => {
     console.log("[popup] received message:", message.action, message);
     if (message.action === "summarizeProgress") {
-        progressText.textContent = `Summarizing ${message.current}/${message.total}...`;
+        const status = message.status ? `${message.status}` : "Summarizing";
+        progressText.textContent = `${status} ${message.current}/${message.total}...`;
     } else if (message.action === "summarizeComplete") {
         console.log("[popup] summarization complete, success =", message.success);
         progressEl.classList.add("hidden");
