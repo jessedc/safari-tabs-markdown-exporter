@@ -41,6 +41,10 @@ async function init() {
         console.error("[popup] init: getSettings failed", err);
         noFolderEl.classList.remove("hidden");
     }
+
+    // Pick up any summarization job that ran while the popup was closed
+    const jobStored = await browser.storage.local.get("summarizeJob");
+    renderJob(jobStored.summarizeJob);
 }
 
 closeTabsCheckbox.addEventListener("change", () => {
@@ -115,25 +119,40 @@ saveBtn.addEventListener("click", async () => {
     }
 });
 
-// Listen for messages from background script
-browser.runtime.onMessage.addListener((message) => {
-    console.log("[popup] received message:", message.action, message);
-    if (message.action === "summarizeProgress") {
-        const status = message.status ? `${message.status}` : "Summarizing";
-        progressText.textContent = `${status} ${message.current}/${message.total}...`;
-    } else if (message.action === "summarizeComplete") {
-        console.log("[popup] summarization complete, success =", message.success);
-        progressEl.classList.add("hidden");
-        if (message.success) {
-            showResult(`Saved to ${message.filePath}`, "success");
-            maybeCloseTabs(message.tabs);
-        } else {
-            console.error("[popup] summarization failed:", message.error);
-            showResult(message.error || "Save failed", "error");
-            saveBtn.disabled = false;
-        }
+// The background script persists job state to storage; render whatever it writes
+browser.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && changes.summarizeJob) {
+        renderJob(changes.summarizeJob.newValue);
     }
 });
+
+function renderJob(job) {
+    if (!job) {
+        return;
+    }
+    console.log("[popup] renderJob:", job.status, `${job.current}/${job.total}`);
+
+    if (job.status === "running") {
+        saveBtn.disabled = true;
+        resultEl.classList.add("hidden");
+        progressEl.classList.remove("hidden");
+        const stage = job.stage || "Summarizing";
+        const displayIndex = Math.min(job.current + 1, job.total);
+        progressText.textContent = `${stage} ${displayIndex}/${job.total}...`;
+    } else if (job.status === "done") {
+        progressEl.classList.add("hidden");
+        showResult(`Saved to ${job.filePath}`, "success");
+        savedTabIds = job.tabs.map(t => t.id);
+        browser.storage.local.remove("summarizeJob");
+        maybeCloseTabs(job.tabs);
+    } else if (job.status === "error") {
+        console.error("[popup] summarization failed:", job.error);
+        progressEl.classList.add("hidden");
+        showResult(job.error || "Save failed", "error");
+        saveBtn.disabled = false;
+        browser.storage.local.remove("summarizeJob");
+    }
+}
 
 function maybeCloseTabs(tabs) {
     console.log("[popup] maybeCloseTabs: closeTabs =", closeTabsCheckbox.checked, "tab count =", tabs.length);
